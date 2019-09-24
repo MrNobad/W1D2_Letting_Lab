@@ -39,13 +39,33 @@ class Property
     end
 
     def update()
-          db = PG.connect({ dbname: 'letting_agent', host: 'localhost' })
-          sql = "UPDATE property SET (address, no_of_rooms, value, build) = ($1, $2, $3, $4) WHERE id = $5"
-          values = [@address, @no_of_rooms, @value, @build, @id]
-          db.prepare("update", sql)
-          db.exec_prepared("update", values)
-          db.close()
-        end
+      db = PG.connect({ dbname: 'letting_agent', host: 'localhost' })
+      sql = "UPDATE property SET (address, no_of_rooms, value, build) = ($1, $2, $3, $4) WHERE id = $5"
+      values = [@address, @no_of_rooms, @value, @build, @id]
+      db.prepare("update", sql)
+      db.exec_prepared("update", values)
+      db.close()
+    end
+
+    def Property.find(id)
+      db = PG.connect({ dbname: 'letting_agent', host: 'localhost' })
+      sql = "SELECT * FROM property WHERE id = $1"
+      values = [id]
+      db.prepare("find", sql)
+      property = db.exec_prepared("find", values)
+      db.close()
+      return Property.new(property[0])
+    end
+
+    def Property.find_address(address)
+      db = PG.connect({ dbname: 'letting_agent', host: 'localhost' })
+      sql = "SELECT * FROM property WHERE address = address"
+      values = [address]
+      db.prepare("find", sql)
+      property = db.exec_prepared("find", values)
+      db.close()
+      return Property.new(property[0])
+    end
 
     def Property.delete_all()
       db = PG.connect({ dbname: 'letting_agent', host: 'localhost' })
