@@ -3,10 +3,10 @@ require('pg')
 class Property
 
   attr_accessor :address, :no_of_rooms, :value, :build
-  # attr_reader :id
+  attr_reader :id
 
   def initialize( options )
-    # @id = options['id'].to_i() if options['id']
+    @id = options['id'].to_i() if options['id']
     @address = options['address']
     @no_of_rooms = options['no_of_rooms'].to_i()
     @value = options['value']
@@ -37,6 +37,15 @@ class Property
       db.close()
       return properties.map { |property| Property.new(property) }
     end
+
+    def update()
+          db = PG.connect({ dbname: 'letting_agent', host: 'localhost' })
+          sql = "UPDATE property SET (address, no_of_rooms, value, build) = ($1, $2, $3, $4) WHERE id = $5"
+          values = [@address, @no_of_rooms, @value, @build, @id]
+          db.prepare("update", sql)
+          db.exec_prepared("update", values)
+          db.close()
+        end
 
     def Property.delete_all()
       db = PG.connect({ dbname: 'letting_agent', host: 'localhost' })
