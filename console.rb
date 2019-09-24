@@ -18,7 +18,7 @@ property1 = Property.new({
     })
     property2.save()
 
-    properties = Property.all()
+    property = Property.all()
 
     binding.pry
     nil

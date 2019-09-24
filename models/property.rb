@@ -16,7 +16,7 @@ class Property
   def save()
     db = PG.connect({ dbname: 'letting_agent', host: 'localhost' })
     sql =
-    "INSERT INTO letting_agent
+    "INSERT INTO property
     (
       address,
       no_of_rooms,
@@ -27,5 +27,22 @@ class Property
       db.prepare("save", sql)
       @id = db.exec_prepared("save", values)[0]["id"].to_i
       db.close() # IMPORTANT
+    end
+
+    def Property.all()
+      db = PG.connect({ dbname: 'letting_agent', host: 'localhost' })
+      sql = "SELECT * FROM property"
+      db.prepare("all", sql)
+      properties = db.exec_prepared("all")
+      db.close()
+      return properties.map { |property| Property.new(property) }
+    end
+
+    def Property.delete_all()
+      db = PG.connect({ dbname: 'letting_agent', host: 'localhost' })
+      sql = "DELETE FROM property"
+      db.prepare("delete_all", sql)
+      db.exec_prepared("delete_all")
+      db.close()
     end
   end
